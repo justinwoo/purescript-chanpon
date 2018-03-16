@@ -1,0 +1,13 @@
+{
+  "name": "purescript-chanpon",
+  "set": "psc-0.11.7-20180315",
+  "source": "https://github.com/purescript/package-sets.git",
+  "depends": [
+    "node-fs-aff",
+    "test-unit",
+    "record",
+    "node-sqlite3",
+    "eff",
+    "prelude"
+  ]
+}

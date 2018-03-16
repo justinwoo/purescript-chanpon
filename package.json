@@ -1,0 +1,17 @@
+{
+  "name": "purescript-chanpon",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/justinwoo/purescript-chanpon.svg?branch=master)](https://travis-ci.org/justinwoo/purescript-chanpon)",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "sqlite3": "^4.0.0"
+  }
+}
