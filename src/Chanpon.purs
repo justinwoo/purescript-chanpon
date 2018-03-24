@@ -13,7 +13,7 @@ import Data.Record (get)
 import Data.Record.Builder as Builder
 import Data.Symbol (SProxy(..))
 import SQLite3 as SQL
-import Type.Prelude (class IsSymbol, Proxy, reflectSymbol)
+import Type.Prelude (class IsSymbol, reflectSymbol)
 import Type.Row (class RowToList, Cons, Nil, RLProxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -32,9 +32,8 @@ selectAll
   => FromResultFields rl () result
   => Table
   -> SQL.DBConnection
-  -> Proxy { | result }
   -> Aff (Effects e) (Array (F { | result }))
-selectAll (Table table) db p
+selectAll (Table table) db
     = map fromResultRow <<< asArray
   <$> SQL.queryDB db query mempty
   where
