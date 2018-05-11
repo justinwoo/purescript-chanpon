@@ -3,13 +3,14 @@ module Test.Main where
 import Prelude
 
 import Chanpon as C
-import Control.Monad.Aff (attempt)
 import Control.Monad.Except (runExcept)
 import Data.Array as Array
 import Data.Either (Either(..))
-import Data.Foreign (F)
 import Data.Traversable (sequence)
 import Data.Tuple (Tuple(..))
+import Effect (Effect)
+import Effect.Aff (attempt)
+import Foreign (F)
 import Node.FS.Aff as FS
 import SQLite3 (newDB)
 import Test.Unit (failure, suite, test)
@@ -17,7 +18,7 @@ import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 import Unsafe.Coerce (unsafeCoerce)
 
-main :: _
+main :: Effect Unit
 main = runTest do
   suite "Chanpon" do
     test "Works as expected" do
