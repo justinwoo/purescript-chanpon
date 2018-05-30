@@ -3,36 +3,32 @@ module Chanpon where
 import Prelude
 
 import Chanpon.Classes (class FromResultFields, class Keys, class PrepareInput, class PrepareSpec, class ToParam, getFields, keys, prepareInputParams, prepareSpec, toParam)
-import Control.Monad.Aff (Aff)
 import Data.Array as Array
-import Data.Foreign (F, Foreign)
 import Data.List (intercalate, (:))
-import Data.Monoid (mempty)
 import Data.Newtype (class Newtype)
-import Data.Record (get)
-import Data.Record.Builder as Builder
 import Data.Symbol (SProxy(..))
+import Effect.Aff (Aff)
+import Foreign (F, Foreign)
+import Prim.Row as Row
+import Prim.RowList (class RowToList, Cons, Nil)
+import Record as Record
+import Record.Builder as Builder
 import SQLite3 as SQL
 import Type.Prelude (class IsSymbol, reflectSymbol)
-import Type.Row (class RowToList, Cons, Nil, RLProxy(..))
+import Type.Row (RLProxy(..))
 import Unsafe.Coerce (unsafeCoerce)
-
-type Effects e =
-  ( db :: SQL.DBEffects
-  | e
-  )
 
 newtype Table = Table String
 derive instance newtypeTable :: Newtype Table _
 
 selectAll
-  :: forall result rl e
+  :: forall result rl
    . RowToList result rl
   => Keys rl
   => FromResultFields rl () result
   => Table
   -> SQL.DBConnection
-  -> Aff (Effects e) (Array (F { | result }))
+  -> Aff (Array (F { | result }))
 selectAll (Table table) db
     = map fromResultRow <<< asArray
   <$> SQL.queryDB db query mempty
@@ -48,13 +44,13 @@ selectAll (Table table) db
     asArray f = unsafeCoerce f :: Array Foreign
 
 createTableIfNotExists
-  :: forall spec rl e
+  :: forall spec rl
    . RowToList spec rl
   => PrepareSpec rl spec
   => Table
   -> SQL.DBConnection
   -> { | spec }
-  -> Aff (Effects e) Unit
+  -> Aff Unit
 createTableIfNotExists (Table table) db spec =
   void $ SQL.queryDB db query mempty
   where
@@ -67,13 +63,13 @@ createTableIfNotExists (Table table) db spec =
     query = intercalate " " queryParts <> ";"
 
 insertOrReplaceInto
-  :: forall input inputL e
+  :: forall input inputL
    . RowToList input inputL
   => PrepareInput inputL input
   => Table
   -> SQL.DBConnection
   -> { | input }
-  -> Aff (Effects e) Unit
+  -> Aff Unit
 insertOrReplaceInto (Table table) db input =
   void $ SQL.queryDB db query (Array.fromFoldable params.args)
   where
@@ -88,20 +84,20 @@ insertOrReplaceInto (Table table) db input =
     query = intercalate " " queryParts <> ";"
 
 deleteFrom
-  :: forall name ty input e
+  :: forall name ty input
    . RowToList input (Cons name ty Nil)
-  => RowCons name ty () input
+  => Row.Cons name ty () input
   => IsSymbol name
   => ToParam ty
   => Table
   -> SQL.DBConnection
   -> { | input }
-  -> Aff (Effects e) Unit
+  -> Aff Unit
 deleteFrom (Table table) db input =
   void $ SQL.queryDB db query (pure $ toParam value)
   where
     nameP = SProxy :: SProxy name
-    value = get nameP input
+    value = Record.get nameP input
     queryParts
       = "DELETE FROM"
       : table

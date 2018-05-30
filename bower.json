@@ -12,13 +12,13 @@
     "output"
   ],
   "dependencies": {
-    "purescript-record": "^0.2.6",
-    "purescript-node-sqlite3": "^1.0.0",
-    "purescript-eff": "^3.2.0",
-    "purescript-prelude": "^3.1.1"
+    "purescript-record": "^1.0.0",
+    "purescript-node-sqlite3": "^3.0.0",
+    "purescript-effect": "^2.0.0",
+    "purescript-prelude": "^4.0.0"
   },
   "devDependencies": {
-    "purescript-node-fs-aff": "^5.0.0",
-    "purescript-test-unit": "^13.0.0"
+    "purescript-node-fs-aff": "justinwoo/purescript-node-fs-aff#compiler/0.12",
+    "purescript-test-unit": "justinwoo/purescript-test-unit#compiler/0.12"
   }
 }
